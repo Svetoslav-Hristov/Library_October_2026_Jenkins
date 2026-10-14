@@ -56,6 +56,7 @@ pipeline {
             }
         }
         
+        
         stage('Verify Render Deployment') {
             steps {
                 script {
@@ -63,30 +64,31 @@ pipeline {
                         waitUntil {
                             sleep(time: 10, unit: 'SECONDS')
 
-                            echo 'Checking frontend...'
-                            def frontendStatus = bat(
-                                returnStatus: true,
-                                script: 'curl.exe --fail --silent --show-error --max-time 10 "https://library-jenkins-fe.onrender.com"'
-                            )
+                    echo 'Checking frontend...'
+                    def frontendStatus = bat(
+                        returnStatus: true,
+                        script: 'curl.exe --fail --silent --show-error --max-time 10 -o NUL "https://library-jenkins-be.onrender.com"'
+                    )
 
-                            echo 'Checking backend...'
-                            def backendStatus = bat(
-                                returnStatus: true,
-                                script: 'curl.exe --fail --silent --show-error --max-time 10 "https://library-jenkins-be.onrender.com"'
-                            )
+                    echo 'Checking backend...'
+                    def backendStatus = bat(
+                        returnStatus: true,
+                        script: 'curl.exe --fail --silent --show-error --max-time 10 -o NUL "https://library-jenkins-fe.onrender.com/users/login"'
+                    )
 
-                            if (frontendStatus == 0 && backendStatus == 0) {
-                                echo 'SUCCESS: Frontend and backend are responding!'
-                                return true
-                            }
-
-                            echo 'Services are not ready yet. Retrying in 10 seconds...'
-                            return false
-                        }
+                    if (frontendStatus == 0 && backendStatus == 0) {
+                        echo 'SUCCESS: Frontend and backend are responding!'
+                        return true
                     }
+
+                        echo 'Services are not ready yet. Retrying in 10 seconds...'
+                        return false
                 }
             }
         }
+    }
+}
+
 
     }
 }
