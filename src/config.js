@@ -1,1 +1,1 @@
-export const settings={host:'https://library-october-2026.onrender.com'}
+export const settings={host:'https://library-jenkins-fe.onrender.com'}
